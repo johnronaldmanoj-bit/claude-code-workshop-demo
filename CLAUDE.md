@@ -8,6 +8,22 @@ This is a deliberately imperfect sandbox for the "Build your CLAUDE.md" workshop
 exercise (see README.md). The quirks in the code are intentional teaching
 material — do not "clean them up" unless the task explicitly asks for it.
 
+## Definition of done
+
+A change is done when `npm test` passes with no failing specs. There is no
+lint step, no build step, and no dependency install to satisfy — the zero-
+dependency `node --test` run is the entire bar.
+
+## How to work
+
+- Before editing a shared module (`@src/shared/formatCurrency.js` or
+  `@src/pricing/calculateInvoice.js`), grep for its callers and their test
+  files first, and say which ones you checked.
+- Run `npm test` before and after a change and report the actual pass/fail
+  counts — not just "tests pass."
+- One file at a time for cross-module edits (e.g. a `formatCurrency` change
+  plus its two call sites): show the diff for each before moving to the next.
+
 ## Commands
 
 ```bash
@@ -16,21 +32,20 @@ node --test tests/pricing.test.js   # run a single test file
 node --test --test-name-pattern "empty cart"   # run a single test by name
 ```
 
-There is no build step, no linter, and no dependency install — the project is
-plain ESM (`"type": "module"`) run directly by Node's built-in test runner.
-Every import must carry its `.js` extension.
+The project is plain ESM (`"type": "module"`) run directly by Node's built-in
+test runner. Every import must carry its `.js` extension.
 
 ## Architecture
 
 Money flows in one direction: `orders` → `pricing` → `shared`.
 
-- `src/pricing/calculateInvoice.js` is the single source of invoice math. It
+- @src/pricing/calculateInvoice.js is the single source of invoice math. It
   takes an array of line-item amounts **in cents** and returns
   `{ subtotalCents, taxCents, totalCents, display }`.
-- `src/orders/createOrder.js` wraps an invoice with an in-memory,
+- @src/orders/createOrder.js wraps an invoice with an in-memory,
   process-local incrementing `id`. Order ids are not stable across runs, so
   tests must not assert on specific id values.
-- `src/shared/formatCurrency.js` is the only place amounts become strings.
+- @src/shared/formatCurrency.js is the only place amounts become strings.
 
 All amounts are integer cents end to end; conversion to a decimal string
 happens only inside `formatCurrency`. Keep new code in cents and format at the
