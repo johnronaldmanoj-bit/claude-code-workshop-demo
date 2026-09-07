@@ -1,0 +1,9 @@
+{
+  "name": "claude-code-workshop-demo",
+  "version": "1.0.0",
+  "description": "Sandbox app for the Claude Code CLAUDE.md workshop exercise.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
